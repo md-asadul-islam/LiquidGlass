@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expanding Liquid Glass Navigation</title>
+  <!-- 
+  /* EX */
+  --> 
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-padding-top: 120px;
+      scroll-behavior: smooth;
+    } 
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      /* background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c); */
+      background: url("https://raw.githubusercontent.com/lucasromerodb/liquid-glass-effect-macos/refs/heads/main/assets/flowers.jpg")
+    center center;
+      background-size: 500px; /* 400% 400% */
+      /* animation: gradientBG 15s ease infinite; */
+      animation: moveBackground 360s linear infinite;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-top: 90px;
+    }
+
+    /*
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    */
+    
+    @keyframes moveBackground {
+      from {
+        background-position: 0% 0%;
+      }
+      to {
+        background-position: 0% -500%;
+      }
+    }
+
+    /* Header with liquid glass effect */
+    .liquidGlass-wrapper {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 80px;
+      transition: height 0.5s cubic-bezier(0.65, 0, 0.35, 1);
+      overflow: hidden;
+      padding: 0 20px;
+    }
+
+    .liquidGlass-wrapper.expanded {
+      height: 480px;
+    }
+
+    .liquidGlass-container {
+      position: relative;
+      height: 100%;
+      width: 100%;
+      border-radius: 0 0 20px 20px;
+      overflow: hidden;
+      /* box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3); */
+      transition: border-radius 0.5s ease;
+    }
+
+    .liquidGlass-wrapper.expanded .liquidGlass-container {
+      border-radius: 0 0 20px 20px;
+    }
+
+    /* SVG for Liquid */
+    .liquidGlass-effect {
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(10px);
+      filter: url(#glass-distortion);
+      overflow: hidden;
+      isolation: isolate;
+    }
+    
+    /* Clearitty of Glass */
+    .liquidGlass-tint {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Border shine */
+    .liquidGlass-shine {
+      position: absolute;
+      inset: 0;
+      box-shadow: 
+        inset 2px 2px 3px rgba(255, 255, 255, 0.3),
+        inset -1px -1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3); 
+      border-radius: 0 0 20px 20px;
+      transition: border-radius 0.5s ease;
+    }
+
+    .liquidGlass-wrapper.expanded .liquidGlass-shine {
+      border-radius: 0 0 20px 20px;
+    }
+
+    /* Any content in Liquid Glass */
+    .liquidGlass-content {
+      position: relative;
+      padding: 15px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header top row */
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 50px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      letter-spacing: 1px;
+    }
+
+    /* Hamburger icon */
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    
+    
+    /* Hamburger Border shine */
+    
+    .hamburger.liquidGlass-shine-ham {
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 8px;
+      padding: 6px 10px;
+      
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease-in-out;
+      overflow: hidden;
+    }
+    
+    .hamburger.liquidGlass-shine-ham::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transform: rotate(25deg);
+      animation: borderShine 3s linear infinite;
+      pointer-events: none;
+    }
+    
+    @keyframes borderShine {
+      0% {
+        transform: rotate(25deg) translate(-100%, -100%);
+      }
+      100% {
+        transform: rotate(25deg) translate(100%, 100%);
+      }
+    }
+
+
+
+
+
+
+    .hamburger span {
+      display: block;
+      height: 3px;
+      background: white;
+      border-radius: 3px;
+      transition: all 0.4s cubic-bezier(0.65, 0, 0.35, 1);
+    }
+
+    .hamburger span:nth-child(1) {
+      width: 100%;
+      transform-origin: left center;
+    }
+
+    .hamburger span:nth-child(2) {
+      width: 80%;
+      margin-left: auto;
+      background-color: #000;
+    }
+
+    .hamburger span:nth-child(3) {
+      width: 60%;
+      margin-left: auto;
+    }
+    
+    /* Hamburger Magic rotation */
+    .liquidGlass-wrapper.expanded .hamburger span:nth-child(1) {
+      transform: translate(1px, 1px) rotate(45deg);
+      width: 25px;
+    } 
+
+    .liquidGlass-wrapper.expanded .hamburger span:nth-child(2) {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+
+    .liquidGlass-wrapper.expanded .hamburger span:nth-child(3) {
+      transform: translate(-2px, -7px) rotate(-45deg);
+      width: 25px;
+    }
+
+    /* Navigation menu */
+    .mobile-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      padding: 20px;
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 0.4s cubic-bezier(0.65, 0, 0.35, 1) 0.1s;
+      height: 0;
+    }
+
+    .liquidGlass-wrapper.expanded .mobile-nav {
+      opacity: 1;
+      transform: translateY(0);
+      height: auto;
+    }
+
+    .mobile-nav a {
+      color: white;
+      font-size: 1.2rem;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mobile-nav a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.3s ease;
+    }
+
+    .mobile-nav a:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(5px);
+    }
+
+    .mobile-nav a:hover::before {
+      transform: scaleY(1);
+    }
+
+    .mobile-nav a i {
+      margin-right: 12px;
+      font-size: 1.4rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Page sections */
+    .page-section {
+      min-height: calc(100vh - 100px);
+      padding: 40px 20px;
+      margin: 20px;
+      border-radius: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(5px);
+      color: white;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      z-index: -1;
+    }
+
+    .page-section h2 {
+      font-size: 2.5rem;
+      margin-bottom: 30px;
+      text-align: center;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .page-section p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      max-width: 800px;
+      margin: 0 auto 20px;
+    }
+
+    /* Content styles */
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .content-card {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 15px;
+      padding: 25px;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .content-card:hover {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-5px);
+    }
+
+    .content-card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: #ffcc00;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      text-align: center;
+      padding: 30px 20px;
+      margin-top: 50px;
+      backdrop-filter: blur(5px);
+    }
+
+    /* Media queries */
+    @media (min-width: 769px) {
+      .liquidGlass-wrapper {
+        padding: 0 50px;
+      }
+      
+      .page-section {
+        padding: 60px 40px;
+        margin: 30px 40px;
+      }
+      
+      .logo {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding-top: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- SVG Filter -->
+  <svg style="display: none">
+    <filter id="glass-distortion">
+      <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="1" seed="5" result="turbulence"/>
+      <feComponentTransfer in="turbulence" result="mapped">
+        <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5"/>
+        <feFuncG type="gamma" amplitude="0" exponent="1" offset="0"/>
+        <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5"/>
+      </feComponentTransfer>
+      <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap"/>
+      <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lighting-color="white" result="specLight">
+        <fePointLight x="-200" y="-200" z="300"/>
+      </feSpecularLighting>
+      <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage"/>
+      <feDisplacementMap in="SourceGraphic" in2="softMap" scale="150" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+  
+  <!-- Expanding Liquid Glass Header -->
+  <header class="liquidGlass-wrapper" id="header">
+    <div class="liquidGlass-container">
+      <div class="liquidGlass-effect"></div>
+      <div class="liquidGlass-tint"></div>
+      <div class="liquidGlass-shine"></div>
+      <div class="liquidGlass-content">
+          
+        <div class="header-top">
+          <div class="logo">LIQUID GLASS</div>
+          <div class="hamburger liquidGlass-shine-ham" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav">
+          <a href="#home" onclick="toggleHeader()">
+            <i>🏠</i> Home
+          </a>
+          <a href="#about" onclick="toggleHeader()">
+            <i>👤</i> About
+          </a>
+          <a href="#services" onclick="toggleHeader()">
+            <i>🛠️</i> Services
+          </a>
+          <a href="#portfolio" onclick="toggleHeader()">
+            <i>🎨</i> Portfolio
+          </a>
+          <a href="#contact" onclick="toggleHeader()">
+            <i>📞</i> Contact
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Page Sections -->
+  <section id="home" class="page-section">
+    <h2>Welcome to Liquid Glass Navigation</h2>
+    <p>Experience the fluid elegance of our expanding glass navigation header. Click the hamburger menu to see the liquid glass effect in action as the header expands to reveal navigation options.</p>
+    <p>This innovative design combines modern glassmorphism with smooth animations for a truly immersive user experience.</p>
+    
+    <div class="content-grid">
+      <div class="content-card">
+        <h3>Modern Design</h3>
+        <p>Our liquid glass navigation combines cutting-edge design trends with practical functionality. The expanding effect creates a unique user experience that feels both intuitive and delightful.</p>
+      </div>
+      <div class="content-card">
+        <h3>Fluid Animation</h3>
+        <p>Experience smooth transitions as the header expands and contracts. The liquid glass effect responds to your interactions with elegant animations that enhance usability.</p>
+      </div>
+      <div class="content-card">
+        <h3>Fully Responsive</h3>
+        <p>Designed to work flawlessly across all device sizes. The liquid glass navigation adapts to provide the best experience whether you're on desktop, tablet, or mobile.</p>
+      </div>
+    </div>
+  </section>
+  
+  <section id="about" class="page-section">
+    <h2>About Our Technology</h2>
+    <p>Liquid Glass Navigation uses advanced CSS techniques to create its signature effect. The glass-like appearance is achieved through a combination of backdrop filters, gradients, and careful layering.</p>
+    <p>We've implemented smooth transitions and animations to ensure that every interaction feels natural and responsive.</p>
+    
+    <div class="content-grid">
+      <div class="content-card">
+        <h3>Backdrop Filters</h3>
+        <p>The frosted glass effect is created using CSS backdrop filters, which blur content behind the element while maintaining transparency.</p>
+      </div>
+      <div class="content-card">
+        <h3>SVG Distortion</h3>
+        <p>An SVG filter adds subtle distortion effects to create the "liquid" quality of the glass, enhancing the realism of the effect.</p>
+      </div>
+      <div class="content-card">
+        <h3>Precise Timing</h3>
+        <p>Custom cubic-bezier timing functions ensure the expansion and collapse animations feel natural and responsive to user input.</p>
+      </div>
+    </div>
+  </section>
+  
+  <section id="services" class="page-section">
+    <h2>Our Services</h2>
+    <p>We specialize in creating innovative UI components that enhance user experience and engagement. Our liquid glass navigation is just one example of our design-forward approach.</p>
+    
+    <div class="content-grid">
+      <div class="content-card">
+        <h3>UI Design</h3>
+        <p>Creating beautiful, intuitive interfaces that users love to interact with.</p>
+      </div>
+      <div class="content-card">
+        <h3>Animation</h3>
+        <p>Implementing smooth, purposeful animations that enhance usability.</p>
+      </div>
+      <div class="content-card">
+        <h3>Development</h3>
+        <p>Building robust, responsive websites with cutting-edge technologies.</p>
+      </div>
+      <div class="content-card">
+        <h3>Consulting</h3>
+        <p>Helping you implement modern UI patterns in your projects.</p>
+      </div>
+    </div>
+  </section>
+  
+  <footer>
+    <p>© 2023 Liquid Glass Navigation Design | Created with Modern CSS Techniques</p>
+    <p>Experience the fluid elegance of expanding glass navigation</p>
+  </footer>
+  
+  <script>
+    function toggleHeader() {
+      const header = document.getElementById('header');
+      header.classList.toggle('expanded');
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const hamburger = document.getElementById('hamburger');
+      hamburger.addEventListener('click', toggleHeader);
+      
+      // Close the header when clicking outside
+      document.addEventListener('click', (e) => {
+        const header = document.getElementById('header');
+        if (header.classList.contains('expanded') && 
+            !header.contains(e.target) && 
+            e.target !== hamburger) {
+          header.classList.remove('expanded');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
